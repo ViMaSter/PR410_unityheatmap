@@ -25,15 +25,35 @@ public class PlayerController : MonoBehaviour {
 		return currentMovement;
 	}
 
-	void FixedUpdate()
+	void Update()
 	{
 		if (Input.GetAxisRaw("Horizontal") != 0.0f || Input.GetAxisRaw("Vertical") != 0.0f)
 		{
 			currentMovement += new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")) * movementSpeed;
 		}
 
-		Debug.Log(Mathf.Atan2(currentMovement.y, currentMovement.x));
+		if (Input.GetMouseButtonDown(0))
+		{
+			Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			mousePosition.z = transform.position.z;
+			RaycastHit2D hit = Physics2D.Raycast(transform.position, mousePosition - transform.position, Mathf.Infinity, ~(1 << 9));
+			if (hit.transform && hit.transform.gameObject.layer == 8 && hit.collider != null)
+			{
+				hit.transform.GetComponent<Hittable>().Hit((hit.transform.position - transform.position).normalized);
+			}
+		}
+	}
 
+	void OnDrawGizmos()
+	{
+		Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		mousePosition.z = transform.position.z;
+		Gizmos.color = Color.red;
+		Gizmos.DrawLine(mousePosition, transform.position);
+	}
+
+	void FixedUpdate()
+	{
 		transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(currentMovement.y, currentMovement.x) * Mathf.Rad2Deg - 90)), rotationLerp);
 		rigidbody2D.velocity = currentMovement;
 		currentMovement *= 1 - falloutRatio;
