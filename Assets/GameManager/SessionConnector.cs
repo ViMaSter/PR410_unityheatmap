@@ -44,7 +44,7 @@ public class SessionConnector : MonoBehaviour
 		Debug.Log("OnClose: " + e.Code + e.Reason);
 	}
 
-	void SendMessage(string message)
+	void SendWebsocketMessage(string message)
 	{
 		Debug.Log("Sent: " + message);
 		websocketConnection.Send(message);
@@ -54,7 +54,7 @@ public class SessionConnector : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
-			SendMessage("BALUS");
+			SendWebsocketMessage("BALUS");
 		}
 	}
 }
