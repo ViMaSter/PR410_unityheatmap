@@ -53,11 +53,11 @@ public class PlayerController : MonoBehaviour {
 		laser.rotation = Quaternion.LookRotation(transform.forward, transform.position - target) * Quaternion.Euler(0, 0, 90);
 
 		RaycastHit2D hit = Physics2D.Raycast(transform.position, target - transform.position, Mathf.Infinity, ~(1 << 9));
-		laser.localScale = new Vector3(Vector2.Distance(transform.position, hit.transform.position), 1, 1);
-		laser.position = Vector2.Lerp(transform.position, hit.transform.position, 0.5f);
+		laser.localScale = new Vector3(Vector2.Distance(transform.position, hit.point), 1, 1);
+		laser.position = Vector2.Lerp(transform.position, hit.point, 0.5f);
 		if (hit.transform && hit.transform.gameObject.layer == 8 && hit.collider != null)
 		{
-			hit.transform.GetComponent<Hittable>().Hit((hit.transform.position - transform.position).normalized);
+			hit.transform.GetComponent<Hittable>().Hit((new Vector3(hit.point.x, hit.point.y) - transform.position).normalized);
 		}
 
 		if (currentFade != null)
