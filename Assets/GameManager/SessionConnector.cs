@@ -18,10 +18,9 @@ public class SessionConnector : MonoBehaviour
 		websocketConnection.Connect ();
 	}
 
-	void OnLog(WebSocketSharp.LogData data, string stringData)
+	void OnLog(WebSocketSharp.LogData data, string logPath)
 	{
 		Debug.Log(data);
-		Debug.Log(stringData);
 	}
 
 	void OnOpen(object sender, System.EventArgs e)
