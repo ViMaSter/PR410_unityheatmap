@@ -2,6 +2,26 @@
 
 using WebSocketSharp;
 
+namespace NetworkMessages
+{
+	[System.Serializable]
+	public class SessionJoin
+	{
+		[SerializeField]
+	    private string command = "sessionJoin";
+
+		// valid sessions 0-Int32.MaxValue; -1 = last available session
+		[SerializeField]
+	    private int sessionID;
+
+	    // without an explicit sessionID specified, join the last available session
+	    public SessionJoin(int sessionID = -1)
+	    {
+			this.sessionID = sessionID;
+	    }
+	}
+}
+
 public class SessionConnector : MonoBehaviour
 {
 	WebSocket websocketConnection;
@@ -11,10 +31,8 @@ public class SessionConnector : MonoBehaviour
 		websocketConnection = new WebSocket("ws://echo.websocket.org");
 		websocketConnection.Log.Level = LogLevel.Trace;
 		websocketConnection.Log.Output = OnLog;
-		websocketConnection.OnOpen += OnOpen;
-		websocketConnection.OnClose += OnClose;
+		websocketConnection.OnOpen += ConnectToLastSession;
 		websocketConnection.OnMessage += OnMessage;
-		websocketConnection.OnError += OnError;
 		websocketConnection.Connect ();
 	}
 
@@ -23,37 +41,19 @@ public class SessionConnector : MonoBehaviour
 		Debug.Log(data);
 	}
 
-	void OnOpen(object sender, System.EventArgs e)
-	{
-		Debug.Log("Connection opened!");
-	}
-
 	void OnMessage(object sender, WebSocketSharp.MessageEventArgs e)
 	{
-		Debug.Log("OnMessage: " + e.Data);
+		Debug.LogFormat("Received network message: '{0}'", e.Data);
 	}
 
-	void OnError(object sender, WebSocketSharp.ErrorEventArgs e)
+	void ConnectToLastSession(object sender, System.EventArgs e)
 	{
-		Debug.Log("OnError: " + e.Message);
-	}
-
-	void OnClose(object sender, WebSocketSharp.CloseEventArgs e)
-	{
-		Debug.Log("OnClose: " + e.Code + e.Reason);
+		SendWebsocketMessage(JsonUtility.ToJson(new NetworkMessages.SessionJoin()));
 	}
 
 	void SendWebsocketMessage(string message)
 	{
-		Debug.Log("Sent: " + message);
+		Debug.LogFormat("Sent network message: '{0}'", message);
 		websocketConnection.Send(message);
-	}
-	
-	void Update ()
-	{
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
-			SendWebsocketMessage("BALUS");
-		}
 	}
 }
