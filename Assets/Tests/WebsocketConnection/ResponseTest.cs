@@ -41,14 +41,14 @@ public class ResponseTest
     [Test]
     public void CreateSession()
     {
-        NetworkDefinitions.Response.SessionJoin<Game.SessionData> sessionJoinResponse;
-        sessionJoinResponse = JsonUtility.FromJson<NetworkDefinitions.Response.SessionJoin<Game.SessionData>>("{\"command\":\"joinSession\",\"session\":{\"playerPositionX\":-1.0,\"playerPositionY\":10.0,\"health\":20.0}}");
+        NetworkDefinitions.Response.SessionJoin<Game.SessionData, Game.PlayerData> sessionJoinResponse;
+        sessionJoinResponse = JsonUtility.FromJson<NetworkDefinitions.Response.SessionJoin<Game.SessionData, Game.PlayerData>>("{\"command\":\"joinSession\",\"session\":{\"playerPositionX\":-1.0,\"playerPositionY\":10.0,\"health\":20.0}}");
         Assert.That(sessionJoinResponse.Command, Does.Match("joinSession"));
         Assert.AreEqual(sessionJoinResponse.Session.PlayerPositionX, -1.0f);
         Assert.AreEqual(sessionJoinResponse.Session.PlayerPositionY, 10.0f);
         Assert.AreEqual(sessionJoinResponse.Session.Health, 20.0f);
 
-        sessionJoinResponse = JsonUtility.FromJson<NetworkDefinitions.Response.SessionJoin<Game.SessionData>>("{\"command\":\"leaveSession\",\"session\":{\"playerPositionX\":0.0,\"playerPositionY\":30.0,\"health\":40.0}}");
+        sessionJoinResponse = JsonUtility.FromJson<NetworkDefinitions.Response.SessionJoin<Game.SessionData, Game.PlayerData>>("{\"command\":\"leaveSession\",\"session\":{\"playerPositionX\":0.0,\"playerPositionY\":30.0,\"health\":40.0}}");
         Assert.That(sessionJoinResponse.Command, Does.Not.Match("createSession"));
         Assert.AreNotEqual(sessionJoinResponse.Session.PlayerPositionX, -1.0f);
         Assert.AreNotEqual(sessionJoinResponse.Session.PlayerPositionY, 10.0f);

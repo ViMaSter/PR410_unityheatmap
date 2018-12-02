@@ -18,4 +18,6 @@ public class LocalPlayerController : MonoBehaviour {
 			pawn.Shoot(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 		}
 	}
+
+	// @TODO Handle AssignNetworkID + own websocket messages
 }

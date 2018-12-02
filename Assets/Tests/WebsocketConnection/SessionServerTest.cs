@@ -26,7 +26,12 @@ public class SessionServerTest
 		Debug.LogWarning(SessionServerConfig.Host+":"+SessionServerConfig.Port);
 		websocketConnection = new WebSocket(SessionServerConfig.Host+":"+SessionServerConfig.Port);
 		websocketConnection.OnOpen += (object sender, System.EventArgs e) => {
-			SendWebsocketMessage(JsonUtility.ToJson(new NetworkDefinitions.Request.CreateSession<Game.SessionData>(new Game.SessionData(
+			SendWebsocketMessage(JsonUtility.ToJson(new NetworkDefinitions.Request.CreateSession<Game.SessionData, Game.PlayerData>(
+			new Game.SessionData(
+				currentSessionID,
+				10, 20
+			),
+			new Game.PlayerData(
 				currentSessionID,
 				10, 20
 			))));
@@ -34,7 +39,7 @@ public class SessionServerTest
 		websocketConnection.OnMessage += (object sender, WebSocketSharp.MessageEventArgs e) =>
 		{
 			Debug.Log(e.Data);
-			NetworkDefinitions.Response.SessionJoin<Game.SessionData> sessionJoinData = JsonUtility.FromJson<NetworkDefinitions.Response.SessionJoin<Game.SessionData>>(e.Data);
+			NetworkDefinitions.Response.SessionJoin<Game.SessionData, Game.PlayerData> sessionJoinData = JsonUtility.FromJson<NetworkDefinitions.Response.SessionJoin<Game.SessionData, Game.PlayerData>>(e.Data);
 			if (sessionJoinData.IsValid)
 			{
 				currentSessionID = sessionJoinData.SessionID;

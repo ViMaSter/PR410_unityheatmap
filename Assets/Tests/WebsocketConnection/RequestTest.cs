@@ -25,11 +25,11 @@ public class RequestTest
     {
     	Assert.That(
     		"{\"command\":\"createSession\",\"parameters\":{\"playerPositionX\":-1.0,\"playerPositionY\":10.0,\"health\":20.0}}", Does.Match(JsonUtility.ToJson(
-    		new NetworkDefinitions.Request.CreateSession<Game.SessionData>(new Game.SessionData(-1.0f, 10.0f, 20.0f))
+    		new NetworkDefinitions.Request.CreateSession<Game.SessionData, Game.PlayerData>(new Game.SessionData(-1.0f, 10.0f, 20.0f), new Game.PlayerData(-1.0f, 10.0f, 20.0f))
 		)));
     	Assert.That(
     		"{\"command\":\"createSession\",\"parameters\":{\"playerPositionX\":-1.0,\"playerPositionY\":10.0,\"health\":20.0}}", Does.Not.Match(JsonUtility.ToJson(
-    		new NetworkDefinitions.Request.CreateSession<Game.SessionData>(new Game.SessionData(0.0f, 30.0f, 40.0f))
+    		new NetworkDefinitions.Request.CreateSession<Game.SessionData, Game.PlayerData>(new Game.SessionData(0.0f, 30.0f, 40.0f), new Game.PlayerData(0.0f, 30.0f, 40.0f))
 		)));
     }
 

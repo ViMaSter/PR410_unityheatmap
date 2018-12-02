@@ -10,6 +10,10 @@ namespace NetworkDefinitions
 	public abstract class GameData
 	{
 	}
+	[System.Serializable]
+	public abstract class PlayerData
+	{
+	}
 
 	namespace Request
 	{
@@ -45,7 +49,27 @@ namespace NetworkDefinitions
 		}
 
 		[System.Serializable]
-		public class CreateSession<CustomGameData> where CustomGameData : NetworkDefinitions.GameData
+		public class LeaveSession
+		{
+			[SerializeField]
+		    private string command = "leaveSession";
+		    public string Command
+		    {
+		    	get
+		    	{
+		    		return command;
+		    	}
+		    }
+
+		    public LeaveSession()
+		    {
+		    }
+		}
+
+		[System.Serializable]
+		public class CreateSession<CustomGameData, CustomPlayerData>
+			where CustomGameData : NetworkDefinitions.GameData
+			where CustomPlayerData : NetworkDefinitions.PlayerData
 		{
 			[SerializeField]
 		    private string command = "createSession";
@@ -57,18 +81,28 @@ namespace NetworkDefinitions
 		    	}
 		    }
 			[SerializeField]
-		    private CustomGameData parameters;
-		    public CustomGameData Parameters
+		    private CustomGameData session;
+		    public CustomGameData Session
 		    {
 		    	get
 		    	{
-		    		return parameters;
+		    		return session;
+		    	}
+		    }
+			[SerializeField]
+		    private CustomPlayerData player;
+		    public CustomPlayerData Player
+		    {
+		    	get
+		    	{
+		    		return player;
 		    	}
 		    }
 
-		    public CreateSession(CustomGameData parameters)
+		    public CreateSession(CustomGameData session, CustomPlayerData player)
 		    {
-		    	this.parameters = parameters;
+		    	this.session = session;
+		    	this.player = player;
 		    }
 		}
 
@@ -115,7 +149,9 @@ namespace NetworkDefinitions
 	namespace Response
 	{
 		[System.Serializable]
-		public class SessionJoin<CustomGameData> where CustomGameData : NetworkDefinitions.GameData
+		public class SessionJoin<CustomGameData, CustomPlayerData>
+			where CustomGameData : NetworkDefinitions.GameData
+			where CustomPlayerData : NetworkDefinitions.PlayerData
 		{
 			[SerializeField]
 		    private string command = "";
@@ -124,6 +160,16 @@ namespace NetworkDefinitions
 		    	get
 		    	{
 		    		return command;
+		    	}
+		    }
+
+			[SerializeField]
+		    private int error = -1;
+		    public int Error
+		    {
+		    	get
+		    	{
+		    		return error;
 		    	}
 		    }
 
@@ -137,12 +183,30 @@ namespace NetworkDefinitions
 		    	}
 		    }
 			[SerializeField]
+		    private int playerID;
+		    public int PlayerID
+		    {
+		    	get 
+		    	{
+		    		return playerID;
+		    	}
+		    }
+			[SerializeField]
 		    private CustomGameData session;
 		    public CustomGameData Session
 		    {
 		    	get
 		    	{
 		    		return session;
+		    	}
+		    }
+			[SerializeField]
+		    private CustomPlayerData player;
+		    public CustomPlayerData Player
+		    {
+		    	get
+		    	{
+		    		return player;
 		    	}
 		    }
 
@@ -156,6 +220,8 @@ namespace NetworkDefinitions
 		    	{
 			    	if(command != "sessionJoin") return false;
 			    	if(sessionID == -1) return false;
+			    	if(playerID == -1) return false;
+			    	if(error != 0) return false;
 			    	return true;
 		    	}
 		    }
@@ -207,6 +273,44 @@ namespace NetworkDefinitions
 		    	}
 		    }
 		}
+
+		[System.Serializable]
+		public class SessionLeave
+		{
+			[SerializeField]
+		    private string command = "";
+		    public string Command
+		    {
+		    	get
+		    	{
+		    		return command;
+		    	}
+		    }
+
+			[SerializeField]
+		    private int error = -1;
+		    public int Error
+		    {
+		    	get
+		    	{
+		    		return error;
+		    	}
+		    }
+
+		    private SessionLeave()
+		    {
+		    }
+
+		    public bool IsValid
+		    {
+		    	get
+		    	{
+			    	if(command != "sessionLeave") return false;
+			    	if(error != 0) return false;
+			    	return true;
+		    	}
+		    }
+		}
 	}
 }
 
@@ -244,6 +348,45 @@ namespace Game
 		}
 
 	    public SessionData(float playerPositionX, float playerPositionY, float health)
+	    {
+			this.playerPositionX = playerPositionX;
+			this.playerPositionY = playerPositionY;
+			this.health = health;
+	    }
+	}
+
+	[System.Serializable]
+	public class PlayerData : NetworkDefinitions.PlayerData
+	{
+		[SerializeField]
+		private float playerPositionX = -1.0f;
+		public float PlayerPositionX
+		{
+			get
+			{
+				return playerPositionX;
+			}
+		}
+		[SerializeField]
+		private float playerPositionY = -1.0f;
+		public float PlayerPositionY
+		{
+			get
+			{
+				return playerPositionY;
+			}
+		}
+		[SerializeField]
+		private float health = -1.0f;
+		public float Health
+		{
+			get
+			{
+				return health;
+			}
+		}
+
+	    public PlayerData(float playerPositionX, float playerPositionY, float health)
 	    {
 			this.playerPositionX = playerPositionX;
 			this.playerPositionY = playerPositionY;
