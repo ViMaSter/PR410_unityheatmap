@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
 	public Transform target;
-	private PlayerController playerController;
+	private Pawn pawn;
 	private new Transform transform;
 	private Vector3 defaultOffsetToTarget = Vector3.zero;
 
@@ -17,7 +17,7 @@ public class CameraController : MonoBehaviour
 	void Awake()
 	{
 		transform = GetComponent<Transform>();
-		playerController = target.GetComponent<PlayerController>();
+		pawn = target.GetComponent<Pawn>();
 		defaultOffsetToTarget = transform.position - target.position;
 	}
 
@@ -25,7 +25,7 @@ public class CameraController : MonoBehaviour
 	{
 		Vector3 targetPosition = target.position;
 		targetPosition += defaultOffsetToTarget;
-		Vector2 targetVelocity = playerController.GetVelocity() * velocityBias;
+		Vector2 targetVelocity = pawn.GetVelocity() * velocityBias;
 		targetPosition += new Vector3(targetVelocity.x, targetVelocity.y, 0);
 
 		transform.position = Vector3.Lerp(transform.position, targetPosition, followLerp);

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
+public class Pawn : MonoBehaviour {
 
 	[Range(0.0001f, 3f)]
 	public float movementSpeed = 1.5f;
@@ -33,22 +33,18 @@ public class PlayerController : MonoBehaviour {
 		return currentMovement;
 	}
 
-	void Update()
+	public void Move(Vector2 movement)
 	{
-		if (Input.GetAxisRaw("Horizontal") != 0.0f || Input.GetAxisRaw("Vertical") != 0.0f)
-		{
-			currentMovement += new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")) * movementSpeed;
-		}
-
-		if (Input.GetMouseButtonDown(0))
-		{
-			Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			mousePosition.z = transform.position.z;
-			Shoot(mousePosition);
-		}
+		currentMovement += movement * movementSpeed;
 	}
 
-	void Shoot(Vector3 target)
+	public void Shoot(Vector2 worldPosition)
+	{
+		Vector3 worldPositionWithPlayerDepth = new Vector3(worldPosition.x, worldPosition.y, transform.position.z);
+		ProcessShot(worldPositionWithPlayerDepth);
+	}
+
+	void ProcessShot(Vector3 target)
 	{
 		laser.rotation = Quaternion.LookRotation(transform.forward, transform.position - target) * Quaternion.Euler(0, 0, 90);
 
