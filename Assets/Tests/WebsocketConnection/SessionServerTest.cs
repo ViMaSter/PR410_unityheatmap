@@ -5,6 +5,7 @@ using System.Collections;
 
 using WebSocketSharp;
 
+// change the PrebuildSetup to either LocalSessionServerTest or RemoteSessionServerTest
 public class SessionServerTest
 {
 	void SendWebsocketMessage(string message)
@@ -17,11 +18,13 @@ public class SessionServerTest
 	int currentSessionID = -1;
 
     [Test]
+    [PrebuildSetup(typeof(LocalSessionServerTest))]
     public void CreateSessionReceiveID()
     {
     	bool receivedMessage = false;
 
-		websocketConnection = new WebSocket("ws://127.0.0.1:7000");
+		Debug.LogWarning(SessionServerConfig.Host+":"+SessionServerConfig.Port);
+		websocketConnection = new WebSocket(SessionServerConfig.Host+":"+SessionServerConfig.Port);
 		websocketConnection.OnOpen += (object sender, System.EventArgs e) => {
 			SendWebsocketMessage(JsonUtility.ToJson(new NetworkDefinitions.Request.CreateSession<Game.SessionData>(new Game.SessionData(
 				currentSessionID,
@@ -46,46 +49,10 @@ public class SessionServerTest
     }
 
     [Test]
-    public void CreateSessionIDIncreases()
+    [PrebuildSetup(typeof(LocalSessionServerTest))]
+    public void CreateTwoSessionsImpossible()
     {
-    	bool receivedMessage = false;
-    	int secondSessionID = -1;
-
-		websocketConnection = new WebSocket("ws://127.0.0.1:7000");
-		websocketConnection.OnOpen += (object sender, System.EventArgs e) => {
-			SendWebsocketMessage(JsonUtility.ToJson(new NetworkDefinitions.Request.CreateSession<Game.SessionData>(new Game.SessionData(
-				currentSessionID,
-				10, 20
-			))));
-		};
-		websocketConnection.OnMessage += (object sender, WebSocketSharp.MessageEventArgs e) =>
-		{
-			if (!receivedMessage)
-			{
-				NetworkDefinitions.Response.SessionJoin<Game.SessionData> sessionJoinData = JsonUtility.FromJson<NetworkDefinitions.Response.SessionJoin<Game.SessionData>>(e.Data);
-				if (sessionJoinData.IsValid)
-				{
-					currentSessionID = sessionJoinData.SessionID;
-				}	
-				SendWebsocketMessage(JsonUtility.ToJson(new NetworkDefinitions.Request.CreateSession<Game.SessionData>(new Game.SessionData(
-					currentSessionID,
-					10, 20
-				))));
-			}
-			else
-			{
-				NetworkDefinitions.Response.SessionJoin<Game.SessionData> sessionJoinData = JsonUtility.FromJson<NetworkDefinitions.Response.SessionJoin<Game.SessionData>>(e.Data);
-				if (sessionJoinData.IsValid)
-				{
-					secondSessionID = sessionJoinData.SessionID;
-				}	
-			}
-			receivedMessage = true;
-		};
-		websocketConnection.Connect ();
-
-		Assert.That(() => {
-			return currentSessionID != -1 && secondSessionID != -1 && currentSessionID < secondSessionID;
-		}, Is.True.After(1000, 100));
+		Assert.IsTrue(false);
+		// @TODO Build test, which verifies message ping-pong of creating an invalid session
     }
 }

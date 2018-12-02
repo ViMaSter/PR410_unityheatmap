@@ -154,7 +154,9 @@ namespace NetworkDefinitions
 		    {
 		    	get
 		    	{
-			    	return command == "sessionJoin";
+			    	if(command != "sessionJoin") return false;
+			    	if(sessionID == -1) return false;
+			    	return true;
 		    	}
 		    }
 		}
@@ -199,7 +201,9 @@ namespace NetworkDefinitions
 		    {
 		    	get
 		    	{
-			    	return command == "sessionJoin";
+			    	if(command != "sessionUpdate") return false;
+			    	if(sessionID == -1) return false;
+			    	return true;
 		    	}
 		    }
 		}
