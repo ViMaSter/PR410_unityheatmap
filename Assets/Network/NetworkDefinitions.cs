@@ -26,6 +26,7 @@ namespace NetworkDefinitions
 		    {
 		    	get
 		    	{
+					if (command == null) return "";
 		    		return command;
 		    	}
 		    }
@@ -57,6 +58,7 @@ namespace NetworkDefinitions
 		    {
 		    	get
 		    	{
+					if (command == null) return "";
 		    		return command;
 		    	}
 		    }
@@ -77,6 +79,7 @@ namespace NetworkDefinitions
 		    {
 		    	get
 		    	{
+					if (command == null) return "";
 		    		return command;
 		    	}
 		    }
@@ -107,7 +110,9 @@ namespace NetworkDefinitions
 		}
 
 		[System.Serializable]
-		public class UpdateSession<CustomGameData> where CustomGameData : NetworkDefinitions.GameData
+		public class UpdateSession<CustomGameData, CustomPlayerData>
+			where CustomGameData : NetworkDefinitions.GameData
+			where CustomPlayerData : NetworkDefinitions.PlayerData
 		{
 			[SerializeField]
 		    private string command = "updateSession";
@@ -115,33 +120,34 @@ namespace NetworkDefinitions
 		    {
 		    	get
 		    	{
+					if (command == null) return "";
 		    		return command;
 		    	}
 		    }
 			[SerializeField]
-		    private int sessionID = int.MinValue;
-		    public int SessionID
+		    private CustomGameData session;
+		    public CustomGameData Session
 		    {
 		    	get
 		    	{
-		    		return sessionID;
+		    		return session;
 		    	}
 		    }
 			[SerializeField]
-		    private CustomGameData parameters;
-		    public CustomGameData Parameters
+		    private CustomPlayerData player;
+		    public CustomPlayerData Player
 		    {
 		    	get
 		    	{
-		    		return parameters;
+		    		return player;
 		    	}
 		    }
 
 		    // without an explicit sessionID specified, join the last available session
-		    public UpdateSession(int sessionID, CustomGameData parameters)
+		    public UpdateSession(CustomGameData session, CustomPlayerData player)
 		    {
-		    	this.sessionID = sessionID;
-		    	this.parameters = parameters;
+		    	this.session = session;
+		    	this.player = player;
 		    }
 		}
 	}
@@ -159,6 +165,7 @@ namespace NetworkDefinitions
 		    {
 		    	get
 		    	{
+					if (command == null) return "";
 		    		return command;
 		    	}
 		    }
@@ -218,17 +225,19 @@ namespace NetworkDefinitions
 		    {
 		    	get
 		    	{
-			    	if(command != "sessionJoin") return false;
-			    	if(sessionID == -1) return false;
-			    	if(playerID == -1) return false;
-			    	if(error != 0) return false;
+			    	if(Command != "sessionJoin") return false;
+			    	if(SessionID == -1) return false;
+			    	if(PlayerID == -1) return false;
+			    	if(Error != 0) return false;
 			    	return true;
 		    	}
 		    }
 		}
 
 		[System.Serializable]
-		public class SessionUpdate<CustomGameData> where CustomGameData : NetworkDefinitions.GameData
+		public class SessionUpdate<CustomGameData, CustomPlayerData>
+			where CustomGameData : NetworkDefinitions.GameData
+			where CustomPlayerData : NetworkDefinitions.PlayerData
 		{
 			[SerializeField]
 		    private string command = "";
@@ -236,19 +245,11 @@ namespace NetworkDefinitions
 		    {
 		    	get
 		    	{
+					if (command == null) return "";
 		    		return command;
 		    	}
 		    }
 
-			[SerializeField]
-		    private int sessionID;
-		    public int SessionID
-		    {
-		    	get 
-		    	{
-		    		return sessionID;
-		    	}
-		    }
 			[SerializeField]
 		    private CustomGameData session;
 		    public CustomGameData Session
@@ -256,6 +257,16 @@ namespace NetworkDefinitions
 		    	get
 		    	{
 		    		return session;
+		    	}
+		    }
+
+			[SerializeField]
+		    private CustomPlayerData player;
+		    public CustomPlayerData Player
+		    {
+		    	get
+		    	{
+		    		return player;
 		    	}
 		    }
 
@@ -267,8 +278,7 @@ namespace NetworkDefinitions
 		    {
 		    	get
 		    	{
-			    	if(command != "sessionUpdate") return false;
-			    	if(sessionID == -1) return false;
+			    	if(Command != "sessionUpdate") return false;
 			    	return true;
 		    	}
 		    }
@@ -283,6 +293,7 @@ namespace NetworkDefinitions
 		    {
 		    	get
 		    	{
+					if (command == null) return "";
 		    		return command;
 		    	}
 		    }
@@ -305,8 +316,8 @@ namespace NetworkDefinitions
 		    {
 		    	get
 		    	{
-			    	if(command != "sessionLeave") return false;
-			    	if(error != 0) return false;
+			    	if(Command != "sessionLeave") return false;
+			    	if(Error != 0) return false;
 			    	return true;
 		    	}
 		    }
@@ -320,38 +331,41 @@ namespace Game
 	public class SessionData : NetworkDefinitions.GameData
 	{
 		[SerializeField]
-		private float playerPositionX = -1.0f;
-		public float PlayerPositionX
+		private string mapName = "";
+		public string MapName
 		{
 			get
 			{
-				return playerPositionX;
+				if (mapName == null) return "";
+				return mapName;
 			}
 		}
+		
 		[SerializeField]
-		private float playerPositionY = -1.0f;
-		public float PlayerPositionY
+		private long timelimit = -1;
+		public long Timelimit
 		{
 			get
 			{
-				return playerPositionY;
+				return timelimit;
 			}
 		}
+		
 		[SerializeField]
-		private float health = -1.0f;
-		public float Health
+		private long currentMatchStart = -1;
+		public long CurrentMatchStart
 		{
 			get
 			{
-				return health;
+				return currentMatchStart;
 			}
 		}
 
-	    public SessionData(float playerPositionX, float playerPositionY, float health)
+	    public SessionData(string mapName, long timelimit, long currentMatchStart)
 	    {
-			this.playerPositionX = playerPositionX;
-			this.playerPositionY = playerPositionY;
-			this.health = health;
+			this.mapName = mapName;
+			this.timelimit = timelimit;
+			this.currentMatchStart = currentMatchStart;
 	    }
 	}
 
@@ -359,38 +373,48 @@ namespace Game
 	public class PlayerData : NetworkDefinitions.PlayerData
 	{
 		[SerializeField]
-		private float playerPositionX = -1.0f;
-		public float PlayerPositionX
+		private string name = "";
+		public string Name
 		{
 			get
 			{
-				return playerPositionX;
-			}
-		}
-		[SerializeField]
-		private float playerPositionY = -1.0f;
-		public float PlayerPositionY
-		{
-			get
-			{
-				return playerPositionY;
-			}
-		}
-		[SerializeField]
-		private float health = -1.0f;
-		public float Health
-		{
-			get
-			{
-				return health;
+				if (name == null) return "";
+				return name;
 			}
 		}
 
-	    public PlayerData(float playerPositionX, float playerPositionY, float health)
+		[SerializeField]
+		private Vector2 position = new Vector2(-1, -1);
+		public Vector2 Position
+		{
+			get
+			{
+				return position;
+			}
+		}
+
+		[SerializeField]
+		private int colorHex = -1;
+		public Color32 ColorHex
+		{
+			get
+			{
+				Color32 color =  new Color32();
+				color.b = (byte)((colorHex) & 0xFF);
+				color.g = (byte)((colorHex>>8) & 0xFF);
+				color.r = (byte)((colorHex>>16) & 0xFF);
+				color.a = 0xFF;
+				return color;
+			}
+		}
+
+	    public PlayerData(string name, Vector2 position, Color32 colorHex)
 	    {
-			this.playerPositionX = playerPositionX;
-			this.playerPositionY = playerPositionY;
-			this.health = health;
+			this.name = name;
+			this.position = position;
+			this.colorHex = colorHex.r << 16 |
+							colorHex.g << 8 |
+							colorHex.b;
 	    }
 	}
 }

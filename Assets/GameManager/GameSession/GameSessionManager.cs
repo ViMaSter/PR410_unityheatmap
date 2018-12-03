@@ -51,14 +51,16 @@ public class GameSessionManager : MonoBehaviour
 	{
 		WebsocketMessageSystem.Instance.SendJSONMessage(JsonUtility.ToJson(new NetworkDefinitions.Request.CreateSession<Game.SessionData, Game.PlayerData>(
 			new Game.SessionData(
-				currentSessionID,
-				10, 20
+				"castle",
+				3L * 60L * 1000L,
+				((long)(System.DateTime.UtcNow - new System.DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds) * 1000L
 			),
 			new Game.PlayerData(
-				currentSessionID,
-				10, 20
-			)))
-		);
+				"NowYouSeeMe",
+				new Vector2(0, 0),
+				new Color32(0, 192, 255, 255)
+			)
+		)));
 		Debug.Log("Create");
 	}
 

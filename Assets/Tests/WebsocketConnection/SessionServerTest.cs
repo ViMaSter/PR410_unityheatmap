@@ -25,14 +25,17 @@ public abstract class SessionServerTest
 		websocketConnection = new WebSocket(SessionServerConfig.Host+":"+SessionServerConfig.Port);
 		websocketConnection.OnOpen += (object sender, System.EventArgs e) => {
 			SendWebsocketMessage(JsonUtility.ToJson(new NetworkDefinitions.Request.CreateSession<Game.SessionData, Game.PlayerData>(
-			new Game.SessionData(
-				currentSessionID,
-				10, 20
-			),
-			new Game.PlayerData(
-				currentSessionID,
-				10, 20
-			))));
+				new Game.SessionData(
+					"castle",
+					3L * 60L * 1000L,
+					0L
+				),
+				new Game.PlayerData(
+					"NowYouSeeMe",
+					new Vector2(0, 0),
+					new Color32(0, 192, 255, 255)
+				)
+			)));
 		};
 		websocketConnection.OnMessage += (object sender, WebSocketSharp.MessageEventArgs e) =>
 		{
@@ -61,12 +64,16 @@ public abstract class SessionServerTest
 		websocketConnection.OnOpen += (object sender, System.EventArgs e) => {
 			SendWebsocketMessage(JsonUtility.ToJson(new NetworkDefinitions.Request.CreateSession<Game.SessionData, Game.PlayerData>(
 				new Game.SessionData(
-					0, 1, 100
+					"castle",
+					3L * 60L * 1000L,
+					0L
 				),
 				new Game.PlayerData(
-					0, 1, 100
-				))
-			));
+					"NowYouSeeMe",
+					new Vector2(0, 0),
+					new Color32(0, 192, 255, 255)
+				)
+			)));
 		};
 		NetworkDefinitions.Response.SessionJoin<Game.SessionData, Game.PlayerData>[] sessionJoins = new NetworkDefinitions.Response.SessionJoin<Game.SessionData, Game.PlayerData>[2];
 
@@ -79,12 +86,16 @@ public abstract class SessionServerTest
 			{
 				SendWebsocketMessage(JsonUtility.ToJson(new NetworkDefinitions.Request.CreateSession<Game.SessionData, Game.PlayerData>(
 					new Game.SessionData(
-						0, 1, 100
+						"castle",
+						3L * 60L * 1000L,
+						0L
 					),
 					new Game.PlayerData(
-						0, 1, 100
-					))
-				));
+						"NowYouSeeMe",
+						new Vector2(0, 0),
+						new Color32(0, 192, 255, 255)
+					)
+				)));
 			}
 		};
 
