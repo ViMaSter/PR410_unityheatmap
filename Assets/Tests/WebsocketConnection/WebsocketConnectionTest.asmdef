@@ -1,5 +1,5 @@
 {
-    "name": "WebsocketConnection",
+    "name": "WebsocketConnectionTest",
     "references": [
         "NetworkDefinitions"
     ],

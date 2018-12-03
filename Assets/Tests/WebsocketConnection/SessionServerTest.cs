@@ -5,8 +5,7 @@ using System.Collections;
 
 using WebSocketSharp;
 
-// change the PrebuildSetup to either LocalSessionServerTest or RemoteSessionServerTest
-public class SessionServerTest
+public abstract class SessionServerTest
 {
 	void SendWebsocketMessage(string message)
 	{
@@ -18,10 +17,9 @@ public class SessionServerTest
 	int currentSessionID = -1;
 
     [Test]
-    [PrebuildSetup(typeof(LocalSessionServerTest))]
     public void CreateSessionReceiveID()
     {
-    	bool receivedMessage = false;
+		bool receivedMessage = false;
 
 		Debug.LogWarning(SessionServerConfig.Host+":"+SessionServerConfig.Port);
 		websocketConnection = new WebSocket(SessionServerConfig.Host+":"+SessionServerConfig.Port);
@@ -54,10 +52,63 @@ public class SessionServerTest
     }
 
     [Test]
-    [PrebuildSetup(typeof(LocalSessionServerTest))]
     public void CreateTwoSessionsImpossible()
     {
-		Assert.IsTrue(false);
-		// @TODO Build test, which verifies message ping-pong of creating an invalid session
+		int receivedMessages = 0;
+
+		Debug.LogWarning(SessionServerConfig.Host+":"+SessionServerConfig.Port);
+		websocketConnection = new WebSocket(SessionServerConfig.Host+":"+SessionServerConfig.Port);
+		websocketConnection.OnOpen += (object sender, System.EventArgs e) => {
+			SendWebsocketMessage(JsonUtility.ToJson(new NetworkDefinitions.Request.CreateSession<Game.SessionData, Game.PlayerData>(
+				new Game.SessionData(
+					0, 1, 100
+				),
+				new Game.PlayerData(
+					0, 1, 100
+				))
+			));
+		};
+		NetworkDefinitions.Response.SessionJoin<Game.SessionData, Game.PlayerData>[] sessionJoins = new NetworkDefinitions.Response.SessionJoin<Game.SessionData, Game.PlayerData>[2];
+
+		websocketConnection.OnMessage += (object sender, WebSocketSharp.MessageEventArgs e) =>
+		{
+			sessionJoins[receivedMessages] = JsonUtility.FromJson<NetworkDefinitions.Response.SessionJoin<Game.SessionData, Game.PlayerData>>(e.Data);
+			receivedMessages++;
+
+			if (receivedMessages == 1)
+			{
+				SendWebsocketMessage(JsonUtility.ToJson(new NetworkDefinitions.Request.CreateSession<Game.SessionData, Game.PlayerData>(
+					new Game.SessionData(
+						0, 1, 100
+					),
+					new Game.PlayerData(
+						0, 1, 100
+					))
+				));
+			}
+		};
+
+		websocketConnection.Connect ();
+
+		Assert.That(() => {
+			try
+			{
+				Assert.IsTrue(sessionJoins[0].IsValid);
+				currentSessionID = sessionJoins[0].SessionID;
+				
+				Assert.IsFalse(sessionJoins[1].IsValid);
+				Assert.AreEqual(sessionJoins[1].Error, 1);
+				return true;
+			}
+			catch (NUnit.Framework.AssertionException e)
+			{
+				throw e;
+			}
+			catch (System.Exception e)
+			{
+				Debug.LogWarning(e);
+				return false;
+			}
+		}, Is.True.After(1000, 100));
     }
 }

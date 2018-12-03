@@ -1,0 +1,14 @@
+{
+    "name": "NetworkDefinitionsTest",
+    "references": [
+        "NetworkDefinitions"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

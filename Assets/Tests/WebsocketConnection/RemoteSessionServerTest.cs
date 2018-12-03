@@ -1,5 +1,6 @@
 ﻿public class RemoteSessionServerTest : SessionServerTest, UnityEngine.TestTools.IPrebuildSetup
 {
+	[NUnit.Framework.OneTimeSetUp]
     public void Setup()
     {
         SessionServerConfig.Host = "ws://cr350server.herokuapp.com";

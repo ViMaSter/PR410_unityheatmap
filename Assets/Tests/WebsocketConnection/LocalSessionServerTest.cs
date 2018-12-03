@@ -1,5 +1,6 @@
 ﻿public class LocalSessionServerTest : SessionServerTest, UnityEngine.TestTools.IPrebuildSetup
 {
+	[NUnit.Framework.OneTimeSetUp]
     public void Setup()
     {
         SessionServerConfig.Host = "ws://127.0.0.1";
