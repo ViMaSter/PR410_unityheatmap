@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class GameSessionManager : MonoBehaviour
 {
@@ -28,19 +29,37 @@ public class GameSessionManager : MonoBehaviour
 	// session ID
 	int currentSessionID = -1;
 	int currentPlayerID = -1;
+	Queue<int> queuedRemotePlayerIDs = new Queue<int>();
 	public void HandleMessage(string JSONMessage)
 	{
 		NetworkDefinitions.Response.SessionJoin<Game.SessionData, Game.PlayerData> sessionJoinData = JsonUtility.FromJson<NetworkDefinitions.Response.SessionJoin<Game.SessionData, Game.PlayerData>>(JSONMessage);
-		NetworkDefinitions.Response.SessionLeave sessionLeaveData = JsonUtility.FromJson<NetworkDefinitions.Response.SessionLeave>(JSONMessage);
-		Debug.Log("aaaa");
 		if (sessionJoinData.IsValid)
 		{
 			OnJoinSession(sessionJoinData);
+			return;
 		}
-		else if (sessionLeaveData.IsValid)
+		
+		NetworkDefinitions.Response.SessionLeave sessionLeaveData = JsonUtility.FromJson<NetworkDefinitions.Response.SessionLeave>(JSONMessage);
+		if (sessionLeaveData.IsValid)
 		{
 			OnLeaveSession(sessionLeaveData);
+			return;
 		}
+		
+		NetworkDefinitions.Response.PlayerJoin<Game.PlayerData> playerJoinData = JsonUtility.FromJson<NetworkDefinitions.Response.PlayerJoin<Game.PlayerData>>(JSONMessage);
+		if (playerJoinData.IsValid)
+		{
+			OnPlayerJoin(playerJoinData);
+			return;
+		}
+		
+		NetworkDefinitions.Response.PlayerUpdate<Game.PlayerData> playerUpdateData = JsonUtility.FromJson<NetworkDefinitions.Response.PlayerUpdate<Game.PlayerData>>(JSONMessage);
+		if (playerUpdateData.IsValid)
+		{
+			OnPlayerUpdate(playerUpdateData);
+			return;
+		}
+
 		else
 		{
 			Debug.LogWarning("Couldn't handle incoming message: " + JSONMessage);
@@ -90,6 +109,12 @@ public class GameSessionManager : MonoBehaviour
 		{
 			Destroy(LocalPlayerInstance.gameObject);
 		}
+
+		if (queuedRemotePlayerIDs.Count != 0)
+		{
+			RemotePlayerInstance = GameObject.Instantiate(RemotePlayerPrefab, Vector3.zero, Quaternion.identity);
+			RemotePlayerInstance.SendMessage("AssignNetworkID", queuedRemotePlayerIDs.Dequeue());
+		}
 	}
 
 	void OnJoinSession(NetworkDefinitions.Response.SessionJoin<Game.SessionData, Game.PlayerData> sessionJoinData)
@@ -108,6 +133,18 @@ public class GameSessionManager : MonoBehaviour
 		currentSessionID = -1;
 		currentPlayerID = -1;
 		currentSessionState = SessionState.NOSESSION;
+	}
+
+	void OnPlayerJoin(NetworkDefinitions.Response.PlayerJoin<Game.PlayerData> playerJoinData)
+	{
+		Debug.Log("Remote player joined, playerID: " + playerJoinData.PlayerID);
+
+		queuedRemotePlayerIDs.Enqueue(playerJoinData.PlayerID);
+	}
+
+	void OnPlayerUpdate(NetworkDefinitions.Response.PlayerUpdate<Game.PlayerData> playerUpdateData)
+	{
+		Debug.Log("Remote player updated, playerID: " + playerUpdateData.PlayerID);
 	}
 
 	string requestedSessionID = "";

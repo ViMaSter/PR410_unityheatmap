@@ -76,24 +76,89 @@ public class ResponseTest
     }
 
     [Test]
-    public void CreateSession()
+    public void SessionJoin()
     {
         NetworkDefinitions.Response.SessionJoin<Game.SessionData, Game.PlayerData> sessionJoinResponse;
-        sessionJoinResponse = JsonUtility.FromJson<NetworkDefinitions.Response.SessionJoin<Game.SessionData, Game.PlayerData>>("{\"command\":\"joinSession\",\"session\":{\"mapName\":\"castle\",\"timelimit\":180000,\"currentMatchStart\":0},\"player\":{\"name\":\"U2L8\", \"position\":{\"x\":-1.0, \"y\":10.0}, \"colorHex\":49407}}");
+        sessionJoinResponse = JsonUtility.FromJson<NetworkDefinitions.Response.SessionJoin<Game.SessionData, Game.PlayerData>>("{\"command\":\"sessionJoin\",\"error\":0,\"sessionID\":25,\"playerID\":1,\"session\":{\"mapName\":\"castle\",\"timelimit\":180000,\"currentMatchStart\":0},\"player\":{\"name\":\"U2L8\", \"position\":{\"x\":-1.0, \"y\":10.0}, \"colorHex\":49407}}");
        
-        Assert.That(sessionJoinResponse.Command, Does.Match("joinSession"));
+        Assert.IsTrue(sessionJoinResponse.IsValid);
+        Assert.That(sessionJoinResponse.Command, Does.Match("sessionJoin"));
+
+        Assert.AreEqual(sessionJoinResponse.SessionID, 25L);
+        Assert.AreEqual(sessionJoinResponse.PlayerID, 1L);
+        
+        Assert.That(sessionJoinResponse.Session.MapName, Does.Match("castle"));
+        Assert.AreEqual(sessionJoinResponse.Session.Timelimit, 180000L);
+        Assert.AreEqual(sessionJoinResponse.Session.CurrentMatchStart, 0L);
+        
         Assert.That(sessionJoinResponse.Player.Name, Does.Match("U2L8"));
         Assert.AreEqual(sessionJoinResponse.Player.Position.x, -1.0f);
         Assert.AreEqual(sessionJoinResponse.Player.Position.y, 10.0f);
         Assert.AreEqual(sessionJoinResponse.Player.ColorHex, new Color32(0, 192, 255, 255));
-        // @TODO See test above
 
-        Assert.That(sessionJoinResponse.Command, Does.Not.Match("updateSession"));
+        Assert.That(sessionJoinResponse.Command, Does.Not.Match("sessionUpdate"));
+
+        Assert.AreNotEqual(sessionJoinResponse.SessionID, 24L);
+        Assert.AreNotEqual(sessionJoinResponse.PlayerID, 0L);
+        
+        Assert.That(sessionJoinResponse.Session.MapName, Does.Not.Match("desert"));
+        Assert.AreNotEqual(sessionJoinResponse.Session.Timelimit, 180001L);
+        Assert.AreNotEqual(sessionJoinResponse.Session.CurrentMatchStart, 1L);
+        
         Assert.That(sessionJoinResponse.Player.Name, Does.Not.Match("NothingPersonal"));
         Assert.AreNotEqual(sessionJoinResponse.Player.Position.x, 0.0f);
         Assert.AreNotEqual(sessionJoinResponse.Player.Position.y, 20.0f);
         Assert.AreNotEqual(sessionJoinResponse.Player.ColorHex, new Color32(255, 193, 0, 255));
-        // @TODO See test above
+    }
+
+    [Test]
+    public void PlayerJoin()
+    {
+        NetworkDefinitions.Response.PlayerJoin<Game.PlayerData> playerJoinResponse;
+        playerJoinResponse = JsonUtility.FromJson<NetworkDefinitions.Response.PlayerJoin<Game.PlayerData>>("{\"command\":\"playerJoin\",\"playerID\":27,\"error\":0,\"player\":{\"name\":\"U2L8\", \"position\":{\"x\":-1.0, \"y\":10.0}, \"colorHex\":49407}}");
+       
+        Assert.IsTrue(playerJoinResponse.IsValid);
+        
+        Assert.That(playerJoinResponse.Command, Does.Match("playerJoin"));
+        Assert.AreEqual(playerJoinResponse.PlayerID, 27);
+
+        Assert.That(playerJoinResponse.Player.Name, Does.Match("U2L8"));
+        Assert.AreEqual(playerJoinResponse.Player.Position.x, -1.0f);
+        Assert.AreEqual(playerJoinResponse.Player.Position.y, 10.0f);
+        Assert.AreEqual(playerJoinResponse.Player.ColorHex, new Color32(0, 192, 255, 255));
+
+        Assert.That(playerJoinResponse.Command, Does.Not.Match("playerUpdate"));
+        Assert.AreNotEqual(playerJoinResponse.PlayerID, 28);
+        
+        Assert.That(playerJoinResponse.Player.Name, Does.Not.Match("NothingPersonal"));
+        Assert.AreNotEqual(playerJoinResponse.Player.Position.x, 0.0f);
+        Assert.AreNotEqual(playerJoinResponse.Player.Position.y, 20.0f);
+        Assert.AreNotEqual(playerJoinResponse.Player.ColorHex, new Color32(255, 193, 0, 255));
+    }
+
+    [Test]
+    public void PlayerUpdate()
+    {
+        NetworkDefinitions.Response.PlayerUpdate<Game.PlayerData> playerUpdateResponse;
+        playerUpdateResponse = JsonUtility.FromJson<NetworkDefinitions.Response.PlayerUpdate<Game.PlayerData>>("{\"command\":\"playerUpdate\",\"playerID\":27,\"error\":0,\"player\":{\"name\":\"U2L8\", \"position\":{\"x\":-1.0, \"y\":10.0}, \"colorHex\":49407}}");
+       
+        Assert.IsTrue(playerUpdateResponse.IsValid);
+
+        Assert.That(playerUpdateResponse.Command, Does.Match("playerUpdate"));
+        Assert.AreEqual(playerUpdateResponse.PlayerID, 27);
+        
+        Assert.That(playerUpdateResponse.Player.Name, Does.Match("U2L8"));
+        Assert.AreEqual(playerUpdateResponse.Player.Position.x, -1.0f);
+        Assert.AreEqual(playerUpdateResponse.Player.Position.y, 10.0f);
+        Assert.AreEqual(playerUpdateResponse.Player.ColorHex, new Color32(0, 192, 255, 255));
+
+        Assert.That(playerUpdateResponse.Command, Does.Not.Match("playerJoin"));
+        Assert.AreNotEqual(playerUpdateResponse.PlayerID, 28);
+
+        Assert.That(playerUpdateResponse.Player.Name, Does.Not.Match("NothingPersonal"));
+        Assert.AreNotEqual(playerUpdateResponse.Player.Position.x, 0.0f);
+        Assert.AreNotEqual(playerUpdateResponse.Player.Position.y, 20.0f);
+        Assert.AreNotEqual(playerUpdateResponse.Player.ColorHex, new Color32(255, 193, 0, 255));
     }
 
 }

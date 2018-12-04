@@ -17,6 +17,8 @@ public class Pawn : MonoBehaviour {
 
 	IEnumerator currentFade = null;
 
+	public string name = "Unnamed Pawn";
+
 	private Vector2 currentMovement = Vector3.zero;
 
 	private new Rigidbody2D rigidbody2D;
@@ -42,6 +44,25 @@ public class Pawn : MonoBehaviour {
 	{
 		Vector3 worldPositionWithPlayerDepth = new Vector3(worldPosition.x, worldPosition.y, transform.position.z);
 		ProcessShot(worldPositionWithPlayerDepth);
+	}
+
+	public void SetName(string name)
+	{
+		this.name = name;
+	}
+
+	public void SetColor(Color32 newColor)
+	{
+		this.GetComponent<Renderer>().material.color = newColor;
+	}
+
+	public Game.PlayerData Serialize()
+	{
+		return new Game.PlayerData(
+			this.name,
+			new Vector2(transform.position.x, transform.position.y),
+			this.GetComponent<Renderer>().material.color
+		);
 	}
 
 	void ProcessShot(Vector3 target)

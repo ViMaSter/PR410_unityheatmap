@@ -143,10 +143,39 @@ namespace NetworkDefinitions
 		    	}
 		    }
 
-		    // without an explicit sessionID specified, join the last available session
 		    public UpdateSession(CustomGameData session, CustomPlayerData player)
 		    {
 		    	this.session = session;
+		    	this.player = player;
+		    }
+		}
+
+		[System.Serializable]
+		public class UpdatePlayer<CustomPlayerData>
+			where CustomPlayerData : NetworkDefinitions.PlayerData
+		{
+			[SerializeField]
+		    private string command = "updatePlayer";
+		    public string Command
+		    {
+		    	get
+		    	{
+					if (command == null) return "";
+		    		return command;
+		    	}
+		    }
+			[SerializeField]
+		    private CustomPlayerData player;
+		    public CustomPlayerData Player
+		    {
+		    	get
+		    	{
+		    		return player;
+		    	}
+		    }
+
+		    public UpdatePlayer(CustomPlayerData player)
+		    {
 		    	this.player = player;
 		    }
 		}
@@ -279,6 +308,124 @@ namespace NetworkDefinitions
 		    	get
 		    	{
 			    	if(Command != "sessionUpdate") return false;
+			    	return true;
+		    	}
+		    }
+		}
+
+		[System.Serializable]
+		public class PlayerJoin<CustomPlayerData>
+			where CustomPlayerData : NetworkDefinitions.PlayerData
+		{
+			[SerializeField]
+		    private string command = "";
+		    public string Command
+		    {
+		    	get
+		    	{
+					if (command == null) return "";
+		    		return command;
+		    	}
+		    }
+
+			[SerializeField]
+		    private int error = -1;
+		    public int Error
+		    {
+		    	get
+		    	{
+		    		return error;
+		    	}
+		    }
+			[SerializeField]
+		    private int playerID;
+		    public int PlayerID
+		    {
+		    	get 
+		    	{
+		    		return playerID;
+		    	}
+		    }
+
+			[SerializeField]
+		    private CustomPlayerData player;
+		    public CustomPlayerData Player
+		    {
+		    	get
+		    	{
+		    		return player;
+		    	}
+		    }
+
+		    private PlayerJoin()
+		    {
+		    }
+
+		    public bool IsValid
+		    {
+		    	get
+		    	{
+			    	if(Command != "playerJoin") return false;
+			    	if(Error != 0) return false;
+			    	return true;
+		    	}
+		    }
+		}
+
+		[System.Serializable]
+		public class PlayerUpdate<CustomPlayerData>
+			where CustomPlayerData : NetworkDefinitions.PlayerData
+		{
+			[SerializeField]
+		    private string command = "";
+		    public string Command
+		    {
+		    	get
+		    	{
+					if (command == null) return "";
+		    		return command;
+		    	}
+		    }
+
+			[SerializeField]
+		    private int error = -1;
+		    public int Error
+		    {
+		    	get
+		    	{
+		    		return error;
+		    	}
+		    }
+			[SerializeField]
+		    private int playerID;
+		    public int PlayerID
+		    {
+		    	get 
+		    	{
+		    		return playerID;
+		    	}
+		    }
+
+			[SerializeField]
+		    private CustomPlayerData player;
+		    public CustomPlayerData Player
+		    {
+		    	get
+		    	{
+		    		return player;
+		    	}
+		    }
+
+		    private PlayerUpdate()
+		    {
+		    }
+
+		    public bool IsValid
+		    {
+		    	get
+		    	{
+			    	if(Command != "playerUpdate") return false;
+			    	if(Error != 0) return false;
 			    	return true;
 		    	}
 		    }

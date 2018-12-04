@@ -10028,7 +10028,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LocalPlayerPrefab: {fileID: 4992970037574050, guid: 51e72e63a76342f419f003f03d1846ae,
     type: 2}
-  RemotePlayerPrefab: {fileID: 0}
+  RemotePlayerPrefab: {fileID: 4168278413217060, guid: d4d9e670fde28f2489031797dc849a78,
+    type: 2}
 --- !u!114 &1388352523
 MonoBehaviour:
   m_ObjectHideFlags: 0
