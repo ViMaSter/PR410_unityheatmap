@@ -8,6 +8,7 @@ public class GameSessionManager : MonoBehaviour
 	private Transform LocalPlayerInstance;
 	public Transform RemotePlayerPrefab;
 	private Transform RemotePlayerInstance;
+	public Transform Spawn;
 
 	// connection state information
 	public enum SessionState
@@ -101,7 +102,7 @@ public class GameSessionManager : MonoBehaviour
 	{
 		if (currentPlayerID != -1 && LocalPlayerInstance == null)
 		{
-			LocalPlayerInstance = GameObject.Instantiate(LocalPlayerPrefab, Vector3.zero, Quaternion.identity);
+			LocalPlayerInstance = GameObject.Instantiate(LocalPlayerPrefab, Spawn.position, Quaternion.identity);
 			LocalPlayerInstance.SendMessage("AssignNetworkID", currentPlayerID);
 		}
 
@@ -112,7 +113,7 @@ public class GameSessionManager : MonoBehaviour
 
 		if (queuedRemotePlayerIDs.Count != 0)
 		{
-			RemotePlayerInstance = GameObject.Instantiate(RemotePlayerPrefab, Vector3.zero, Quaternion.identity);
+			RemotePlayerInstance = GameObject.Instantiate(RemotePlayerPrefab, Spawn.position, Quaternion.identity);
 			RemotePlayerInstance.SendMessage("AssignNetworkID", queuedRemotePlayerIDs.Dequeue());
 		}
 	}
