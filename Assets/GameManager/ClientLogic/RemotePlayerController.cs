@@ -50,6 +50,4 @@ public class RemotePlayerController : MonoBehaviour {
 		Debug.Log("Handled update for player "+networkPlayerID);
 		OnUpdatePlayer(playerUpdateData.Player.Position);
 	}
-
-	// @TODO Handle AssignNetworkID + own websocket messages
 }

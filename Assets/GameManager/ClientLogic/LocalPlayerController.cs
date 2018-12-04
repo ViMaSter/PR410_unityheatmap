@@ -54,6 +54,5 @@ public class LocalPlayerController : MonoBehaviour {
 		}
 
 		Debug.Log("Handled update for player "+networkPlayerID);
-		// @TODO Think about how e handle local player messages
 	}
 }
