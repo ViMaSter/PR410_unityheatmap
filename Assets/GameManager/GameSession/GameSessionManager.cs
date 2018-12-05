@@ -71,7 +71,7 @@ public class GameSessionManager : MonoBehaviour
 	{
 		WebsocketMessageSystem.Instance.SendJSONMessage(JsonUtility.ToJson(new NetworkDefinitions.Request.CreateSession<Game.SessionData, Game.PlayerData>(
 			new Game.SessionData(
-				"castle",
+				"unity",
 				3L * 60L * 1000L,
 				((long)(System.DateTime.UtcNow - new System.DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds) * 1000L
 			),

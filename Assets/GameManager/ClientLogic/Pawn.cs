@@ -16,7 +16,7 @@ public class Pawn : MonoBehaviour {
 
 	IEnumerator currentFade = null;
 
-	public string username = "Unnamed Pawn";
+	public string username = "Unity Player";
 
 	private Vector2 currentMovement = Vector3.zero;
 
