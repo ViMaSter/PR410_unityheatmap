@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class GameSessionManager : MonoBehaviour
 {
@@ -154,20 +154,20 @@ public class GameSessionManager : MonoBehaviour
 		switch (currentSessionState)
 		{
 			case SessionState.NOSESSION:
-				if (GUI.Button(new Rect(0, 0, Screen.width / 2, Screen.height / 4), "Create Session"))
+				if (GUI.Button(new Rect(0, 0, (float)Screen.width / 2, (float)Screen.height / 4), "Create Session"))
 				{
 					RequestCreateSession();
 				}
 
-				requestedSessionID = GUI.TextField(new Rect(Screen.width / 2, 0, Screen.width / 2, Screen.height / 4), requestedSessionID);
-				if (GUI.Button(new Rect(Screen.width / 2, Screen.height / 4, Screen.width / 2, Screen.height / 4), "Join Session"))
+				requestedSessionID = GUI.TextField(new Rect((float)Screen.width / 2, 0, (float)Screen.width / 2, (float)Screen.height / 4), requestedSessionID);
+				if (GUI.Button(new Rect((float)Screen.width / 2, (float)Screen.height / 4, (float)Screen.width / 2, (float)Screen.height / 4), "Join Session"))
 				{
 					RequestJoinSession(int.Parse(requestedSessionID));
 				}
 				break;
 			case SessionState.INSESSION:
 				GUI.Label(new Rect(0, 0, Screen.width, 20), "In session "+currentSessionID);
-				if (GUI.Button(new Rect(0, 20, Screen.width / 2, Screen.height / 2), "Leave Session"))
+				if (GUI.Button(new Rect(0, 20, (float)Screen.width / 2, (float)Screen.height / 2), "Leave Session"))
 				{
 					RequestLeaveSession();
 				}

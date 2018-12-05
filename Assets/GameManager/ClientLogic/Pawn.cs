@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Pawn : MonoBehaviour {
@@ -17,7 +16,7 @@ public class Pawn : MonoBehaviour {
 
 	IEnumerator currentFade = null;
 
-	public string name = "Unnamed Pawn";
+	public string username = "Unnamed Pawn";
 
 	private Vector2 currentMovement = Vector3.zero;
 
@@ -48,7 +47,7 @@ public class Pawn : MonoBehaviour {
 
 	public void SetName(string name)
 	{
-		this.name = name;
+		this.username = name;
 	}
 
 	public void SetColor(Color32 newColor)
@@ -59,7 +58,7 @@ public class Pawn : MonoBehaviour {
 	public Game.PlayerData Serialize()
 	{
 		return new Game.PlayerData(
-			this.name,
+			this.username,
 			new Vector2(transform.position.x, transform.position.y),
 			this.GetComponent<Renderer>().material.color
 		);

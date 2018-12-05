@@ -1,9 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.TestTools;
-using NUnit.Framework;
-using System.Collections;
-
-using WebSocketSharp;
+﻿using NUnit.Framework;
+using UnityEngine;
 
 public class RequestTest
 {

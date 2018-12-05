@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using WebSocketSharp;
 
-public class WebsocketMessageSystem : MonoBehaviour
+public class WebsocketMessageSystem : MonoBehaviour, System.IDisposable
 {
 	// MonoBehaviour-esque Singleton pattern
 	//
@@ -52,7 +50,7 @@ public class WebsocketMessageSystem : MonoBehaviour
 	}
 
     public delegate void MessageListener(string JSONMessage);
-    private event MessageListener OnJSONMessage;
+    private event MessageListener OnJSONMessage = (string JSONMessage) => {};
 	public void AddMessageListener(MessageListener newEvent)
 	{
 		WebsocketMessageSystem.Instance.OnJSONMessage += newEvent;
@@ -97,4 +95,9 @@ public class WebsocketMessageSystem : MonoBehaviour
 		InitializeSingleton();
 		InitializeWebsocket();
 	}
+
+    public void Dispose()
+    {
+        ((IDisposable)websocketConnection).Dispose();
+    }
 }

@@ -1,11 +1,9 @@
-﻿using UnityEngine;
-using UnityEngine.TestTools;
-using NUnit.Framework;
-using System.Collections;
-
+﻿using NUnit.Framework;
+using System;
+using UnityEngine;
 using WebSocketSharp;
 
-public abstract class SessionServerTest
+public abstract class SessionServerTest : System.IDisposable
 {
 	void SendWebsocketMessage(string message)
 	{
@@ -14,7 +12,7 @@ public abstract class SessionServerTest
 	}
 
 	WebSocket websocketConnection;
-	int currentSessionID = -1;
+	int currentSessionID = -1; //-CS0414
 
     [Test]
     public void CreateSessionReceiveID()
@@ -39,12 +37,8 @@ public abstract class SessionServerTest
 		};
 		websocketConnection.OnMessage += (object sender, WebSocketSharp.MessageEventArgs e) =>
 		{
-			Debug.Log(e.Data);
 			NetworkDefinitions.Response.SessionJoin<Game.SessionData, Game.PlayerData> sessionJoinData = JsonUtility.FromJson<NetworkDefinitions.Response.SessionJoin<Game.SessionData, Game.PlayerData>>(e.Data);
-			if (sessionJoinData.IsValid)
-			{
-				currentSessionID = sessionJoinData.SessionID;
-			}
+			Assert.IsTrue(sessionJoinData.IsValid);
 			receivedMessage = true;
 		};
 		websocketConnection.Connect ();
@@ -105,15 +99,14 @@ public abstract class SessionServerTest
 			try
 			{
 				Assert.IsTrue(sessionJoins[0].IsValid);
-				currentSessionID = sessionJoins[0].SessionID;
 				
 				Assert.IsFalse(sessionJoins[1].IsValid);
 				Assert.AreEqual(sessionJoins[1].Error, 1);
 				return true;
 			}
-			catch (NUnit.Framework.AssertionException e)
+			catch (NUnit.Framework.AssertionException assertionException)
 			{
-				throw e;
+				throw;
 			}
 			catch (System.Exception e)
 			{
@@ -121,5 +114,10 @@ public abstract class SessionServerTest
 				return false;
 			}
 		}, Is.True.After(1000, 100));
+    }
+
+    public void Dispose()
+    {
+        ((IDisposable)websocketConnection).Dispose();
     }
 }
