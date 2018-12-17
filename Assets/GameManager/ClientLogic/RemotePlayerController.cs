@@ -21,7 +21,7 @@ public class RemotePlayerController : MonoBehaviour {
 
 	void Update()
 	{
-		// we're supressing movement but are still converned about movemend to render rotation
+		// we're supressing movement but are still concerned about movement to render rotation
 		pawn.Move((networkPosition - (Vector2)pawn.transform.position).normalized);
 		pawn.transform.position = networkPosition;
 	}
