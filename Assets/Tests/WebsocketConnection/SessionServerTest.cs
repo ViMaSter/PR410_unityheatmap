@@ -12,7 +12,6 @@ public abstract class SessionServerTest : System.IDisposable
 	}
 
 	WebSocket websocketConnection;
-	int currentSessionID = -1; //-CS0414
 
     [Test]
     public void CreateSessionReceiveID()
