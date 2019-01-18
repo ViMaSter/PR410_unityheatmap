@@ -9994,7 +9994,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1388352521}
   - component: {fileID: 1388352522}
-  - component: {fileID: 1388352523}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -10028,22 +10027,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LocalPlayerPrefab: {fileID: 4992970037574050, guid: 51e72e63a76342f419f003f03d1846ae,
     type: 2}
-  RemotePlayerPrefab: {fileID: 4168278413217060, guid: d4d9e670fde28f2489031797dc849a78,
-    type: 2}
   Spawn: {fileID: 1818991118}
---- !u!114 &1388352523
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1388352520}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2dfb9eb98c45e0e4eadb1ca91ded9f1a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hostname: localhost
-  port: 7000
 --- !u!1 &1388588387
 GameObject:
   m_ObjectHideFlags: 0

@@ -55,15 +55,6 @@ public class Pawn : MonoBehaviour {
 		this.GetComponent<Renderer>().material.color = newColor;
 	}
 
-	public Game.PlayerData Serialize()
-	{
-		return new Game.PlayerData(
-			this.username,
-			new Vector2(transform.position.x, transform.position.y),
-			this.GetComponent<Renderer>().material.color
-		);
-	}
-
 	void ProcessShot(Vector3 target)
 	{
 		laser.rotation = Quaternion.LookRotation(transform.forward, transform.position - target) * Quaternion.Euler(0, 0, 90);
