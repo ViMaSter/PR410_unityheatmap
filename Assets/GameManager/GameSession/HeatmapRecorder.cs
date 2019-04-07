@@ -4,18 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // borrowed from https://gamedev.stackexchange.com/a/137526
-[Serializable]
-struct SerializableDateTime {
-    public long value;
-    public static implicit operator DateTime(SerializableDateTime serializableDateTime) {
-        return DateTime.FromFileTimeUtc(serializableDateTime.value);
-    }
-    public static implicit operator SerializableDateTime(DateTime source) {
-        SerializableDateTime serializableDateTime = new SerializableDateTime();
-        serializableDateTime.value = source.ToFileTimeUtc();
-        return serializableDateTime;
-    }
-}
 
 public class HeatmapRecorder : MonoBehaviour
 {
@@ -41,14 +29,25 @@ public class HeatmapRecorder : MonoBehaviour
 	}
 	#endregion
 
-	DateTime sessionStartAt = new DateTime();
-	void Awake()
+	#region Serializable data formats
+	[Serializable]
+	public struct SerializableDateTime
 	{
-		sessionStartAt = DateTime.Now;
+		public long value;
+		public static implicit operator DateTime(SerializableDateTime serializableDateTime)
+		{
+			return DateTime.FromFileTimeUtc(serializableDateTime.value);
+		}
+		public static implicit operator SerializableDateTime(DateTime source)
+		{
+			SerializableDateTime serializableDateTime = new SerializableDateTime();
+			serializableDateTime.value = source.ToFileTimeUtc();
+			return serializableDateTime;
+		}
 	}
 
 	[Serializable]
-	class SessionInfo
+	public class SessionInfo
 	{
 		public string mapName;
 		public Bounds mapBounds;
@@ -59,19 +58,20 @@ public class HeatmapRecorder : MonoBehaviour
 	}
 
 	[Serializable]
-	class DeathInfo
+	public class DeathInfo
 	{
 		public Vector3 position;
 		public SerializableDateTime timestamp;
 	}
+	#endregion
 
+	private DateTime sessionStartAt = new DateTime();
 	private List<DeathInfo> deathsThisRound = new List<DeathInfo>();
 	public Bounds mapBounds;
 
-	void OnDrawGizmosSelected()
+	void Awake()
 	{
-		Gizmos.color = Color.white;
-		Gizmos.DrawCube(mapBounds.center, mapBounds.size);
+		sessionStartAt = DateTime.Now;
 	}
 
 	public void RecordDeath(Vector3 position)
@@ -108,7 +108,7 @@ public class HeatmapRecorder : MonoBehaviour
 
 		string targetFileName = Path.Combine(
 			targetFolder,
-			DateTime.Now.ToString("MM-dd-yyyy_HH-mm-ss") + ".json"
+			DateTime.Now.ToString("yyy-MM-dd_HH-mm-ss") + ".json"
 		);	
 
 		using (StreamWriter writer = new StreamWriter(targetFileName, false))
@@ -118,5 +118,11 @@ public class HeatmapRecorder : MonoBehaviour
 		Debug.Log("Wrote to " + targetFileName);
 
 		return serializedSessionInfo;
+	}
+
+	void OnDrawGizmosSelected()
+	{
+		Gizmos.color = Color.white;
+		Gizmos.DrawCube(mapBounds.center, mapBounds.size);
 	}
 }
