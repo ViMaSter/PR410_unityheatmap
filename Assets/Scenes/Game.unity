@@ -8678,6 +8678,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5cae27b4b083c543a9046a4d16d2a66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mapBounds:
+    m_Center: {x: 50, y: -50, z: 0}
+    m_Extent: {x: 50, y: 50, z: 0}
 --- !u!1 &1388588387
 GameObject:
   m_ObjectHideFlags: 0
