@@ -108,7 +108,7 @@ public class HeatmapRecorder : MonoBehaviour
 
 		string targetFileName = Path.Combine(
 			targetFolder,
-			DateTime.Now.ToString("MM-dd-yyyy_HH-mm-ss") + ".txt"
+			DateTime.Now.ToString("MM-dd-yyyy_HH-mm-ss") + ".json"
 		);	
 
 		using (StreamWriter writer = new StreamWriter(targetFileName, false))

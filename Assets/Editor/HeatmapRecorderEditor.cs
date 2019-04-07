@@ -2,10 +2,21 @@
  using UnityEditor;
  
  [CustomEditor(typeof(HeatmapRecorder))]
- public class HeatmapRecorderEditor : Editor {
+ public class HeatmapRecorderEditor : Editor
+ {
      void OnSceneGUI()
 	 {
 		HeatmapRecorder recorder = target as HeatmapRecorder;
+
+		Handles.BeginGUI();
+        if (GUILayout.Button("Browse recordings...", GUILayout.Width(200)))
+        {
+            EditorUtility.RevealInFinder(System.IO.Path.Combine(
+				Application.persistentDataPath,
+				"heatmapData"
+			));
+        }
+        Handles.EndGUI();
 
 		// draw handles
 		{
@@ -49,6 +60,5 @@
 		}
 
 		Handles.Label(recorder.mapBounds.center + new Vector3(-recorder.mapBounds.extents.x, -recorder.mapBounds.extents.y), "Heatmap bounds");
-
      }
  }
