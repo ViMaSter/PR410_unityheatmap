@@ -2,7 +2,7 @@
 
 public class Hittable : MonoBehaviour
 {
-	[Range(0.0f, 2000f)]
+	[Range(0.0f, 20000f)]
 	public float intensity = 1.0f;
 	private new Rigidbody2D rigidbody2D;
 
@@ -13,6 +13,8 @@ public class Hittable : MonoBehaviour
 
 	public void Hit(Vector2 direction)
 	{
-		rigidbody2D.AddForce(direction.normalized * intensity);
+		HeatmapRecorder.Instance.RecordDeath(transform.position);
+		Destroy(transform.parent.gameObject);
+		// TODO @VM Write to heatmapdata
 	}
 }

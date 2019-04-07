@@ -21,4 +21,12 @@ public class LocalPlayerController : MonoBehaviour {
 			pawn.Shoot(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 		}
 	}
+
+	void OnDrawGizmos()
+	{
+		Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		mousePosition.z = transform.position.z;
+		Gizmos.color = Color.red;
+		Gizmos.DrawLine(mousePosition, transform.position);
+	}
 }

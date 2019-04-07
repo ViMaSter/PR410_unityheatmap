@@ -36,7 +36,7 @@ public class Pawn : MonoBehaviour {
 
 	public void Move(Vector2 movement)
 	{
-		currentMovement += movement * movementSpeed;
+		currentMovement += movement.normalized * movementSpeed;
 	}
 
 	public void Shoot(Vector2 worldPosition)
@@ -95,14 +95,6 @@ public class Pawn : MonoBehaviour {
 		}
 
 		currentFade = null;
-	}
-
-	void OnDrawGizmos()
-	{
-		Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		mousePosition.z = transform.position.z;
-		Gizmos.color = Color.red;
-		Gizmos.DrawLine(mousePosition, transform.position);
 	}
 
 	void FixedUpdate()
