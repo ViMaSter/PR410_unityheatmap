@@ -51,6 +51,7 @@ public class HeatmapRecorder : MonoBehaviour
 	class SessionInfo
 	{
 		public string mapName;
+		public Bounds mapBounds;
 		public SerializableDateTime mapSessionStart;
 		public SerializableDateTime mapSessionEnd;
 
@@ -65,6 +66,14 @@ public class HeatmapRecorder : MonoBehaviour
 	}
 
 	private List<DeathInfo> deathsThisRound = new List<DeathInfo>();
+	public Bounds mapBounds;
+
+	void OnDrawGizmosSelected()
+	{
+		Gizmos.color = Color.white;
+		Gizmos.DrawCube(mapBounds.center, mapBounds.size);
+	}
+
 	public void RecordDeath(Vector3 position)
 	{
 		deathsThisRound.Add(new DeathInfo{
@@ -86,6 +95,7 @@ public class HeatmapRecorder : MonoBehaviour
 			mapName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().path,
 			mapSessionStart = sessionStartAt,
 			mapSessionEnd = DateTime.Now,
+			mapBounds = mapBounds,
 			deaths = deathsThisRound
 		});
 
