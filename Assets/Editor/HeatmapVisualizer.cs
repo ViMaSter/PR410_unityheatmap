@@ -235,18 +235,58 @@ public class HeatmapVisualizer : EditorWindow, IHasCustomMenu
 			{
 				float intensity = HeatmapVisualizer.Instance.values[x, y] / (float)HeatmapVisualizer.Instance.highestValue;
 
-				Gizmos.color = HeatmapVisualizer.Instance.plottingGradient.Evaluate(intensity);
-				Gizmos.DrawCube(
-					recorder.mapBounds.min +
+				Vector3 pos = recorder.mapBounds.min +
 					new Vector3(
 						x * HeatmapVisualizer.Instance.plottingUnits,
 						y * HeatmapVisualizer.Instance.plottingUnits,
 						3
-					) + Vector3.one*(HeatmapVisualizer.Instance.plottingUnits / 2),
-					Vector3.one * HeatmapVisualizer.Instance.plottingUnits * 1f
+					) + Vector3.one*(HeatmapVisualizer.Instance.plottingUnits / 2);
+
+				Gizmos.color = HeatmapVisualizer.Instance.plottingGradient.Evaluate(intensity);
+				UnityEditor.Handles.DrawSolidRectangleWithOutline
+				(
+					new Vector3[]
+					{
+						pos + new Vector3( 0.5f, -0.5f, 0) * HeatmapVisualizer.Instance.plottingUnits,
+						pos + new Vector3( 0.5f,  0.5f, 0) * HeatmapVisualizer.Instance.plottingUnits,
+						pos + new Vector3(-0.5f,  0.5f, 0) * HeatmapVisualizer.Instance.plottingUnits,
+						pos + new Vector3(-0.5f, -0.5f, 0) * HeatmapVisualizer.Instance.plottingUnits
+					},
+					HeatmapVisualizer.Instance.plottingGradient.Evaluate(intensity),
+					new Color(0, 0, 0, 0)
 				);
 			}
 		}
+
+        UnityEditor.Handles.BeginGUI();
+		Ray ray = HandleUtility.GUIPointToWorldRay( Event.current.mousePosition );
+		RaycastHit hit;
+		if( Physics.Raycast(ray, out hit) )
+		{
+			Vector3 relativeQuery = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition).origin - recorder.mapBounds.min;
+			relativeQuery = new Vector3(
+				relativeQuery.x / (recorder.mapBounds.max - recorder.mapBounds.min).x,
+				relativeQuery.y / (recorder.mapBounds.max - recorder.mapBounds.min).y,
+				relativeQuery.z / (recorder.mapBounds.max - recorder.mapBounds.min).z
+			);
+			relativeQuery = Vector3.Scale(relativeQuery, new Vector3(
+				HeatmapVisualizer.Instance.values.GetLength(0),
+				HeatmapVisualizer.Instance.values.GetLength(1),
+				0
+			));
+			
+            GUI.color = Color.white;
+            GUI.backgroundColor = Color.white;
+			GUI.Label(
+				new Rect(Event.current.mousePosition.x + 20, Event.current.mousePosition.y + 20, 200, 200),
+				"Value: " +
+				HeatmapVisualizer.Instance.values[
+					(int)(Mathf.Floor(relativeQuery.x)),
+					(int)(Mathf.Floor(relativeQuery.y))
+				]
+			);
+		}
+        UnityEditor.Handles.EndGUI();
     }
 
 }
